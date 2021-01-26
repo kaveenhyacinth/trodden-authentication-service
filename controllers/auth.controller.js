@@ -48,7 +48,7 @@ const signup = (req, res) => {
 
   nomad
     .save()
-    .then(() => res.json({ msg: "Welcome to Trodden" }))
+    .then(() => res.status(200).json({ msg: "Welcome to Trodden", code: 1 }))
     .catch((err) =>
       res.status(400).json({
         err,
