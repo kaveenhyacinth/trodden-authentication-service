@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { check} = require('express-validator');
 
-const { checkEmail, checkUsername, signup } = require("../controllers/auth.controller");
+const { checkEmail, checkUsername, signup, signin } = require("../controllers/auth.controller");
 
 // Signup route
 router.post('/signup', [
@@ -13,5 +13,12 @@ router.post('/signup', [
     check("email").isEmail().withMessage("Enter a valid email"),
 ], 
 checkEmail, checkUsername, signup);
+
+// Signin route
+router.post('/signin', [
+    check("email").isEmail().withMessage("Enter a valid email"),
+    check("password").isLength({min: 6, max: 12}).withMessage("Enter a value between 6 to 12 characters long")
+], 
+signin);
 
 module.exports = router;

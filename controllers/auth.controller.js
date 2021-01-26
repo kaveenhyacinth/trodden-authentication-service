@@ -80,6 +80,7 @@ const signin = (req, res) => {
       return res.status(200).json({
         msg: "Signin Successful",
         code: 1,
+        token
       });
     })
     .catch((err) =>
