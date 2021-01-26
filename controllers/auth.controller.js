@@ -53,8 +53,47 @@ const signup = (req, res) => {
     );
 };
 
+// signin a user
+const signin = (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.status(422).json(errors);
+
+  const { email, password } = req.body;
+  // Find user using the email
+  Nomad.findOne({ email })
+    .then((nomad) => {
+      // Authorize the password
+      if (!nomad.authenticate(password)) {
+        res.status(401).json({
+          msg: "Password is not valid",
+          code: 0,
+        });
+      }
+
+      const { _id } = nomad;
+
+      // Create the Auth token
+      const token = jwt.sign({ _id }, process.env.SECRET);
+      // Put token in cookie
+      res.cookie("token", token, { expire: new Date() + 29 });
+
+      return res.status(200).json({
+        msg: "Signin Successful",
+        code: 1,
+      });
+    })
+    .catch((err) =>
+      res.status(400).json({
+        msg: "Email is not valid or not a registered user",
+        code: 0,
+        err,
+      })
+    );
+};
+
 module.exports = {
   checkEmail,
   checkUsername,
   signup,
+  signin,
 };
