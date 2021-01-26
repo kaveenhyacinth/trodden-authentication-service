@@ -6,25 +6,29 @@ const expressJwt = require("express-jwt");
 // Check for existing emails
 const checkEmail = (req, res, next) => {
   const { email } = req.body;
-  Nomad.findOne({ email }).then((user) => {
-    if (user)
-      return res
-        .status(400)
-        .json({ msg: "User with this email already exists" });
-    next();
-  });
+  Nomad.findOne({ email })
+    .then((user) => {
+      if (user)
+        return res
+          .status(400)
+          .json({ msg: "User with this email already exists" });
+      next();
+    })
+    .catch((err) => res.status(400).json(err));
 };
 
 // Check for existing usernames
 const checkUsername = (req, res, next) => {
   const { username } = req.body;
-  Nomad.findOne({ username }).then((user) => {
-    if (user)
-      return res
-        .status(400)
-        .json({ msg: "User with this username already exists" });
-    next();
-  });
+  Nomad.findOne({ username })
+    .then((user) => {
+      if (user)
+        return res
+          .status(400)
+          .json({ msg: "User with this username already exists" });
+      next();
+    })
+    .catch((err) => res.status(400).json(err));
 };
 
 // Signup a user
@@ -75,13 +79,14 @@ const signin = (req, res) => {
       // Create the Auth token
       const token = jwt.sign({ _id }, process.env.SECRET);
       // Put token in cookie
-      res.cookie("token", token, { expire: new Date() + 29 });
-
-      return res.status(200).json({
-        msg: "Signin Successful",
-        code: 1,
-        token
-      });
+      return res
+        .status(200)
+        .cookie("token", token, { expire: new Date() + 29 })
+        .json({
+          msg: "Signin Successful",
+          code: 1,
+          token,
+        });
     })
     .catch((err) =>
       res.status(400).json({

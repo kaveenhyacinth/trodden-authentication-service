@@ -119,7 +119,7 @@ nomadSchema.methods = {
   },
 
   // Authenticate user by password
-  autenticate: function(plainpass) {
+  authenticate: function(plainpass) {
     return this.securePassword(plainpass) === this.encry_password;
   }
 };
