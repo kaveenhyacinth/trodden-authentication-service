@@ -97,12 +97,20 @@ const signin = (req, res) => {
     );
 };
 
+// signout
+const signout = (req, res) => {
+  res.clearCookie("token");
+  res.json({
+    msg: "User has signout successfully",
+  });
+};
+
 /* Protected routes */
 
 // Saving and signin to auth object in req
 const isSignedIn = expressJwt({
   secret: process.env.SECRET,
-  userProperty: "auth"
+  userProperty: "auth",
 });
 
 /* Custom middleware */
@@ -112,19 +120,20 @@ const isAuthenticated = (req, res, next) => {
   // check the profile id which sent from the backend is equivalant with the id wich saved by isSignedIn
   let owner = req.profile && req.auth && req.profile._id === req.auth._id;
 
-  if(!owner){
-      return res.status(403).json({
-          error: "ACCESS DENIED!"
-      });
+  if (!owner) {
+    return res.status(403).json({
+      error: "ACCESS DENIED!",
+    });
   }
   next();
-}
+};
 
 module.exports = {
   checkEmail,
   checkUsername,
   signup,
   signin,
+  signout,
   isSignedIn,
-  isAuthenticated
+  isAuthenticated,
 };
